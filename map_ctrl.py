@@ -2,6 +2,7 @@
 import pygame, sys
 from res_ctrl import *
 from param import *
+from machine import *
 import json
 
 class MapInfo:
@@ -20,7 +21,9 @@ class MapCtrl:
         # 地图中能在屏幕中显示的瓦片数
         self.visibleTileW = self.surface.get_width() / MAP_TITLE_SIZE + 1
         self.visibleTileH = self.surface.get_height() / MAP_TITLE_SIZE + 1
-        print(self.visibleTileH)
+        # Machine列表
+        self.machineList = []
+        self.machineList.append(Machine([2, 3], self.resCtrl))
 
     def loadMap(self, map_path):
         with open(map_path) as fp:
@@ -28,6 +31,13 @@ class MapCtrl:
             map_json = json.loads(map_file_content)
             self.mapInfo = MapInfo(map_json)
             fp.close()
+        return
+
+    def mapPos2SurPos(self, mapPos):
+        # 从地图坐标转化为surface坐标
+        #surPos = (mapPos - self.viewPos) * MAP_TITLE_SIZE
+        #return surPos
+        pass
 
     # 设置当前鼠标位置
     def setMousePos(self, pos):
@@ -64,24 +74,26 @@ class MapCtrl:
             # 计算在surface中的坐标(单位: 像素)
             sur_x = map_x * MAP_TITLE_SIZE
             sur_y = map_y * MAP_TITLE_SIZE
+            mapPos = (count % self.mapInfo.w, count / self.mapInfo.w)
+            surPos = mapPos2SurPos(mapPos)
             if index == 1:
                 self.surface.blit(grass, (sur_x, sur_y))
+                #self.surface.blit(grass, surPos)
             elif index == 2:
                 self.surface.blit(water, (sur_x, sur_y))
             count += 1
-            
-    
+                    
     def drawUpperItem(self):
         pass
     
     def drawMachine(self):
-        pass
+        for machine in self.machineList:
+            machineImg = machine.getImg()
+            machinePos = (30, 40)
+            self.surface.blit(machineImg, machinePos)
 
     def drawTarget(self):
         # 描画鼠标target
-        #mouse_x = self.mousePos[0] / MAP_TITLE_SIZE
-        #mouse_y = self.mousePos[1] / MAP_TITLE_SIZE
-        #print("mouse x = %d, y = %d" % (mouse_x, mouse_y))
         normal_target = self.resCtrl.getImgNormalTarget()
         mouse_draw_pos = (self.mousePos[0] / MAP_TITLE_SIZE * MAP_TITLE_SIZE, self.mousePos[1] / MAP_TITLE_SIZE * MAP_TITLE_SIZE)
         self.surface.blit(normal_target, mouse_draw_pos)

@@ -10,6 +10,8 @@ class ResCtrl:
         # target相关
         self.imgNormalTarget = None
         self.imgTarget = pygame.image.load("res/img/target.png").convert_alpha()
+        # machine相关
+        self.imgMachine = None
         
     def getImgGrass(self):
         if self.imgGrass == None:
@@ -26,3 +28,7 @@ class ResCtrl:
             self.imgNormalTarget = self.imgTarget.subsurface(pygame.Rect(48, 0, 48, 48)).copy()
         return self.imgNormalTarget.copy()
         
+    def getImgMachine(self):
+        if self.imgMachine == None:
+            self.imgMachine = pygame.image.load("res/img/machine.png").convert_alpha()
+        return self.imgMachine.copy()
