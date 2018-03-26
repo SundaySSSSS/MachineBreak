@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import pygame,sys
 from director import *
-
-SCR_W = 800
-SCR_H = 600
+from param import *
 
 pygame.init()
 screen = pygame.display.set_mode((SCR_W, SCR_H))

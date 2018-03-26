@@ -8,4 +8,4 @@ class UICtrl:
         self.rect = ui_surface.get_rect()
         self.resCtrl = resCtrl
     def draw(self):
-        pygame.draw.rect(self.surface, pygame.Color("red"), self.rect)
+        pygame.draw.rect(self.surface, pygame.Color("blue"), self.rect)
