@@ -14,7 +14,13 @@ class MapCtrl:
     def __init__(self, map_surface, resCtrl):
         self.surface = map_surface
         self.resCtrl = resCtrl
-        self.mousePos = (-1, -1) # 鼠标所在位置
+        self.mousePos = [-1, -1] # 鼠标所在位置, 单位像素, 相对于地图surface
+        # 视点所在位置, 单位为地图index, 表示显示的左上角第一个地图块的index. (0, 0)表示从地图左上角进行展示
+        self.viewPos = [0, 0]
+        # 地图中能在屏幕中显示的瓦片数
+        self.visibleTileW = self.surface.get_width() / MAP_TITLE_SIZE + 1
+        self.visibleTileH = self.surface.get_height() / MAP_TITLE_SIZE + 1
+        print(self.visibleTileH)
 
     def loadMap(self, map_path):
         with open(map_path) as fp:
@@ -26,7 +32,24 @@ class MapCtrl:
     # 设置当前鼠标位置
     def setMousePos(self, pos):
         self.mousePos = pos
-    
+
+    # 移动地图
+    def down(self, step):
+        if self.viewPos[1] + self.visibleTileH < self.mapInfo.h + 1:
+            self.viewPos[1] += step
+
+    def up(self, step):
+        if self.viewPos[1] > 0:
+            self.viewPos[1] -= step
+
+    def right(self, step):
+        if self.viewPos[0] + self.visibleTileW < self.mapInfo.w + 1:
+            self.viewPos[0] += step
+
+    def left(self, step):
+        if self.viewPos[0] > 0:
+            self.viewPos[0] -= step
+    # 描画相关
     def drawLowerItem(self):
         grass = self.resCtrl.getImgGrass()
         water = self.resCtrl.getImgWater()
@@ -35,12 +58,16 @@ class MapCtrl:
         count = 0
         while count < mapTileNum:
             index = self.mapInfo.data[count]
-            x = (count % self.mapInfo.w) * MAP_TITLE_SIZE
-            y = (count / self.mapInfo.w) * MAP_TITLE_SIZE
+            # 计算在地图中的坐标
+            map_x = (count % self.mapInfo.w) - self.viewPos[0]
+            map_y = (count / self.mapInfo.w) - self.viewPos[1]
+            # 计算在surface中的坐标(单位: 像素)
+            sur_x = map_x * MAP_TITLE_SIZE
+            sur_y = map_y * MAP_TITLE_SIZE
             if index == 1:
-                self.surface.blit(grass, (x, y))
+                self.surface.blit(grass, (sur_x, sur_y))
             elif index == 2:
-                self.surface.blit(water, (x, y))
+                self.surface.blit(water, (sur_x, sur_y))
             count += 1
             
     
@@ -60,6 +87,7 @@ class MapCtrl:
         self.surface.blit(normal_target, mouse_draw_pos)
     
     def draw(self):
+        self.surface.fill((0,0,0))
         self.drawLowerItem()
         self.drawUpperItem()
         self.drawMachine()

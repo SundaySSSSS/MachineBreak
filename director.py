@@ -32,10 +32,14 @@ class Director:
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.unicode == "":
-                print("[KEYDOWN]:", "#", event.key, event.mod)
-            else:
-                print("[KEYDOWN]:", event.unicode, event.key, event.mod)
+            if event.key == pygame.K_DOWN:
+                self.mapCtrl.down(1)
+            if event.key == pygame.K_UP:
+                self.mapCtrl.up(1)
+            if event.key == pygame.K_LEFT:
+                self.mapCtrl.left(1)
+            if event.key == pygame.K_RIGHT:
+                self.mapCtrl.right(1)
         elif event.type == pygame.MOUSEMOTION:
             # 转化为地图区域的坐标
             mousePosInMap = (event.pos[0] - MAP_AREA_X, event.pos[1])
