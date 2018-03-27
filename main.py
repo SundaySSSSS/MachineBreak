@@ -15,7 +15,4 @@ while True:
         director.processEvent(event)
 
     director.draw()
-    
     pygame.display.update()
-
-
