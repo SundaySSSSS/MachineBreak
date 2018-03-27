@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import pygame, sys
-from res_ctrl import *
-from param import *
-from machine import *
+from res_ctrl import ResCtrl
+import param
+from machine import Machine
 import json
 
 
@@ -21,8 +20,8 @@ class MapCtrl:
         # 视点所在位置, 单位为地图index, 表示显示的左上角第一个地图块的index. (0, 0)表示从地图左上角进行展示
         self.viewPos = [0, 0]
         # 地图中能在屏幕中显示的瓦片数
-        self.visibleTileW = self.surface.get_width() / MAP_TITLE_SIZE + 1
-        self.visibleTileH = self.surface.get_height() / MAP_TITLE_SIZE + 1
+        self.visibleTileW = self.surface.get_width() / param.MAP_TITLE_SIZE + 1
+        self.visibleTileH = self.surface.get_height() / param.MAP_TITLE_SIZE + 1
         # Machine列表
         self.machineList = []
         self.machineList.append(Machine([2, 3], self.resCtrl))
@@ -38,8 +37,8 @@ class MapCtrl:
     def mapPos2SurPos(self, mapPos):
         # 从地图坐标转化为surface坐标
         surPos = [0, 0]
-        surPos[0] = (mapPos[0] - self.viewPos[0]) * MAP_TITLE_SIZE
-        surPos[1] = (mapPos[1] - self.viewPos[1]) * MAP_TITLE_SIZE
+        surPos[0] = (mapPos[0] - self.viewPos[0]) * param.MAP_TITLE_SIZE
+        surPos[1] = (mapPos[1] - self.viewPos[1]) * param.MAP_TITLE_SIZE
         return surPos
 
     # 设置当前鼠标位置
@@ -86,13 +85,15 @@ class MapCtrl:
     def drawMachine(self):
         for machine in self.machineList:
             machineImg = machine.getImg()
-            machinePos = (30, 40)
+            machinePos = self.mapPos2SurPos(machine.getPos())
             self.surface.blit(machineImg, machinePos)
 
     def drawTarget(self):
         # 描画鼠标target
         normal_target = self.resCtrl.getImgNormalTarget()
-        mouse_draw_pos = (self.mousePos[0] / MAP_TITLE_SIZE * MAP_TITLE_SIZE, self.mousePos[1] / MAP_TITLE_SIZE * MAP_TITLE_SIZE)
+        mouse_draw_pos = \
+            (self.mousePos[0] / param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE,
+             self.mousePos[1] / param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE)
         self.surface.blit(normal_target, mouse_draw_pos)
 
     def draw(self):
