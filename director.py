@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pygame
+import sys
 from ui_ctrl import UICtrl
 from map_ctrl import MapCtrl
 from res_ctrl import ResCtrl
@@ -41,11 +42,15 @@ class Director:
             if event.key == pygame.K_RIGHT:
                 self.mapCtrl.right(1)
         elif event.type == pygame.MOUSEMOTION:
-            # 转化为地图区域的坐标
-            mousePosInMap = (event.pos[0] - param.MAP_AREA_X, event.pos[1])
-            self.mapCtrl.setMousePos(mousePosInMap)
+            # 鼠标移动
+            # 转化为地图surface的坐标
+            posInSurface = (event.pos[0] - param.MAP_AREA_X, event.pos[1])
+            self.mapCtrl.setMousePos(posInSurface)
         elif event.type == pygame.MOUSEBUTTONUP:
-            print("[MOUSEBUTTONUP]:", event.pos, event.button)
+            # 鼠标抬起
+            # 转化为地图surface的坐标
+            posInSurface = (event.pos[0] - param.MAP_AREA_X, event.pos[1])
+            self.mapCtrl.selectSomething(posInSurface)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             print("[MOUSEBUTTONDOWN]:", event.pos, event.button)
 
