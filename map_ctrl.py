@@ -3,6 +3,10 @@ import param
 from machine import Machine
 import json
 
+# MapCtrl的状态
+NORMAL_STATE = 0  # 通常状态
+MACH_SELETED_STATE = 1  # 选中了某个Machine的状态
+
 
 class MapInfo:
     def __init__(self, map_json):
@@ -13,6 +17,7 @@ class MapInfo:
 
 class MapCtrl:
     def __init__(self, map_surface, resCtrl):
+        self.state = NORMAL_STATE  # 当前状态
         self.surface = map_surface
         self.resCtrl = resCtrl
         self.mousePos = [-1, -1]  # 鼠标所在位置, 单位像素, 相对于地图surface
@@ -26,6 +31,7 @@ class MapCtrl:
         self.machineList = []
         self.machineList.append(Machine([2, 3], self.resCtrl))
         self.selectMachine = None  # 当前选中的Machine
+        self.movableList = []  # 选中Machine的可移动范围
 
     def loadMap(self, map_path):
         with open(map_path) as fp:
@@ -68,10 +74,26 @@ class MapCtrl:
         self.mousePos = surPos
 
     def selectSomething(self, surPos):
-        # 在地图上选择了某个地图块
+        # 在地图上选择了某个地图块(一般是鼠标左键抬起)
         mapPos = self.surPos2MapPos(surPos)
-        if self.isHaveMachineAt(mapPos):
-            self.selectMachine = self.getMachineByMapPos(mapPos)
+        if self.state == NORMAL_STATE:
+            if self.isHaveMachineAt(mapPos):
+                self.selectMachine = self.getMachineByMapPos(mapPos)
+                self.state = MACH_SELETED_STATE  # 选中了某个Machine, 切换状态
+                # 选中了一个Machine, 计算可以移动的范围
+                self.movableList = self.getMovableTile(
+                    self.selectMachine.getPos(),
+                    self.selectMachine.getActionAbilityLeft())
+        elif self.state == MACH_SELETED_STATE:
+            if tuple(mapPos) in self.movableList:
+                # 选中的目标在可移动范围内, 移动到目标位置
+                print("in movalbeList")
+                self.selectMachine.moveTo(mapPos, self.getDistance(
+                    mapPos, self.selectMachine.getPos()))
+            self.state = NORMAL_STATE  # 什么也没选中, 切换到通常状态
+            self.selectMachine.turnStart()  # 仅用于测试, 实装回合切换后去除
+            self.selectMachine = None
+            self.movableList = []
 
     # 移动地图
     def down(self, step):
@@ -149,23 +171,21 @@ class MapCtrl:
 
     def drawTarget(self):
         # Target层描画
+        # 描画可选目标target(当选中machine后显示可移动范围)
+        if self.state == MACH_SELETED_STATE:
+            if self.selectMachine is not None:
+                # 在可移动地点上描画标记
+                movableTarget = self.resCtrl.getImgMovableTarget()
+                for mapPos in self.movableList:
+                    surPos = self.mapPos2SurPos(mapPos)
+                    self.surface.blit(movableTarget, surPos)
+
         # 描画鼠标target
         normal_target = self.resCtrl.getImgNormalTarget()
         mouse_draw_pos = \
             (self.mousePos[0] / param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE,
              self.mousePos[1] / param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE)
         self.surface.blit(normal_target, mouse_draw_pos)
-        # 描画可选目标target(当选中machine后显示可移动范围)
-        if self.selectMachine is not None:
-            # 选中了一个Machine, 计算可以移动的范围
-            movableList = self.getMovableTile(
-                self.selectMachine.getPos(),
-                self.selectMachine.getActionAbilityLeft())
-            # 在可移动地点上描画标记
-            movableTarget = self.resCtrl.getImgMovableTarget()
-            for mapPos in movableList:
-                surPos = self.mapPos2SurPos(mapPos)
-                self.surface.blit(movableTarget, surPos)
 
     def draw(self):
         # 地图描画, 地图从下到上依次为:
