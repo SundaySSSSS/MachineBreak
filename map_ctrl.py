@@ -29,7 +29,8 @@ class MapCtrl:
             self.surface.get_height() / param.MAP_TITLE_SIZE + 1
         # Machine列表
         self.machineList = []
-        self.machineList.append(Machine([2, 3], self.resCtrl))
+        self.machineList.append(Machine("Tom", [2, 3], self.resCtrl))
+        self.machineList.append(Machine("Jerry", [5, 5], self.resCtrl))
         self.selectMachine = None  # 当前选中的Machine
         self.movableList = []  # 选中Machine的可移动范围
 
@@ -87,7 +88,6 @@ class MapCtrl:
         elif self.state == MACH_SELETED_STATE:
             if tuple(mapPos) in self.movableList:
                 # 选中的目标在可移动范围内, 移动到目标位置
-                print("in movalbeList")
                 self.selectMachine.moveTo(mapPos, self.getDistance(
                     mapPos, self.selectMachine.getPos()))
             self.state = NORMAL_STATE  # 什么也没选中, 切换到通常状态

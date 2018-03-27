@@ -2,10 +2,11 @@
 
 
 class Machine:
-    def __init__(self, pos, resCtrl):
+    def __init__(self, name, pos, resCtrl):
         self.pos = pos  # 位置, 例如[2, 3]
         self.actionAblity = 3  # 行动力
         self.actionLeft = 3  # 剩余行动力
+        self.name = name
         self.img = resCtrl.getImgMachine()
 
     def moveTo(self, pos, action_cost):
