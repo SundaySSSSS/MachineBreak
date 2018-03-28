@@ -33,13 +33,14 @@ class Director:
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:
+            key = event.key
+            if key == pygame.K_DOWN or key == pygame.K_s:
                 self.mapCtrl.down(1)
-            if event.key == pygame.K_UP:
+            if key == pygame.K_UP or key == pygame.K_w:
                 self.mapCtrl.up(1)
-            if event.key == pygame.K_LEFT:
+            if key == pygame.K_LEFT or key == pygame.K_a:
                 self.mapCtrl.left(1)
-            if event.key == pygame.K_RIGHT:
+            if key == pygame.K_RIGHT or key == pygame.K_d:
                 self.mapCtrl.right(1)
         elif event.type == pygame.MOUSEMOTION:
             # 鼠标移动
