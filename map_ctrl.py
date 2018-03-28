@@ -24,7 +24,8 @@ class MapCtrl:
         # 视点所在位置, 单位为地图index, 表示显示的左上角第一个地图块的index. (0, 0)表示从地图左上角进行展示
         self.viewPos = [0, 0]
         # 地图中能在屏幕中显示的瓦片数
-        self.visibleTileW = self.surface.get_width() // param.MAP_TITLE_SIZE + 1
+        self.visibleTileW = \
+            self.surface.get_width() // param.MAP_TITLE_SIZE + 1
         self.visibleTileH = \
             self.surface.get_height() // param.MAP_TITLE_SIZE + 1
         # Machine列表
@@ -37,7 +38,7 @@ class MapCtrl:
     def getSelectMachine(self):
         # 获取当前选中的Machine
         return self.selectMachine
-        
+
     def loadMap(self, map_path):
         with open(map_path) as fp:
             map_file_content = fp.read()
@@ -46,17 +47,19 @@ class MapCtrl:
             fp.close()
         return
 
-    def isHaveMachineAt(self, pos):
+    def isHaveMachineAt(self, mapPos):
         # 检查输入位置是否存在machine(pos为地图坐标)
         for mach in self.machineList:
-            if mach.getPos() == pos:
+            machPos = mach.getPos()
+            if machPos[0] == list(mapPos)[0] and machPos[1] == list(mapPos)[1]:
                 return True
         return False
 
     def getMachineByMapPos(self, mapPos):
         # 通过地图坐标找到对应的machine
         for mach in self.machineList:
-            if mach.getPos() == mapPos:
+            machPos = mach.getPos()
+            if machPos[0] == list(mapPos)[0] and machPos[1] == list(mapPos)[1]:
                 return mach
         return None
 
@@ -171,6 +174,9 @@ class MapCtrl:
         # 在较小的范围内遍历所有点
         for x in range(min_x, max_x + 1):
             for y in range(min_y, max_y + 1):
+                if self.isHaveMachineAt((x, y)):
+                    # 如果目标地点有machine, 无法移动
+                    continue
                 distance = self.getDistance((x, y), startMapPos)
                 if (distance <= actionAblity):
                     movableList.append((x, y))
