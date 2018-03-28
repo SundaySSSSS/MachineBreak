@@ -11,6 +11,7 @@ class ResCtrl:
         # target相关
         self.imgNormalTarget = None
         self.imgMovableTarget = None
+        self.imgAttackableTarget = None
         self.imgTarget = \
             pygame.image.load("res/img/target.png").convert_alpha()
         # machine相关
@@ -41,6 +42,13 @@ class ResCtrl:
             self.imgMovableTarget = \
                 self.imgTarget.subsurface(pygame.Rect(0, 48, 48, 48)).copy()
         return self.imgMovableTarget.copy()
+
+    def getImgAttackableTarget(self):
+        # 获取可攻击目标标记图
+        if self.imgAttackableTarget is None:
+            self.imgAttackableTarget = \
+                self.imgTarget.subsurface(pygame.Rect(48, 48, 48, 48)).copy()
+        return self.imgAttackableTarget.copy()
 
     def getImgMachine(self):
         if self.imgMachine is None:

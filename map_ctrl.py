@@ -33,7 +33,8 @@ class MapCtrl:
         self.machineList.append(Machine("Tom", [2, 3], self.resCtrl))
         self.machineList.append(Machine("Jerry", [5, 5], self.resCtrl))
         self.selectMachine = None  # 当前选中的Machine
-        self.movableList = []  # 选中Machine的可移动范围
+        self.movableList = []  # 选中Machine的可移动地图块列表
+        self.attackableList = []  # 选中Machine的可攻击目标列表
 
     def getSelectMachine(self):
         # 获取当前选中的Machine
@@ -94,6 +95,9 @@ class MapCtrl:
                 self.movableList = self.getMovableTile(
                     self.selectMachine.getPos(),
                     self.selectMachine.getActionAbilityLeft())
+                self.attackableList = self.getAttackableTile(
+                    self.selectMachine.getPos(),
+                    self.selectMachine.getAtkRange())
         elif self.state == MACH_SELETED_STATE:
             if tuple(mapPos) in self.movableList:
                 # 选中的目标在可移动范围内, 移动到目标位置
@@ -155,32 +159,55 @@ class MapCtrl:
         distance_y = abs(mapPos1[1] - mapPos2[1])
         return distance_x + distance_y
 
-    def getMovableTile(self, startMapPos, actionAblity):
-        # 获取可移动的位置列表
-        movableList = []
+    def getNearByTile(self, centerMapPos, radius):
+        # 获取指定中心附近的地图块列表
+        nearByList = []
         # 获取可移动的大致范围
-        min_x = startMapPos[0] - actionAblity
+        min_x = centerMapPos[0] - radius
         if min_x < 0:
             min_x = 0
-        max_x = startMapPos[0] + actionAblity
+        max_x = centerMapPos[0] + radius
         if max_x >= self.mapInfo.w:
             max_x = self.mapInfo.w - 1
-        min_y = startMapPos[1] - actionAblity
+        min_y = centerMapPos[1] - radius
         if min_y < 0:
             min_y = 0
-        max_y = startMapPos[1] + actionAblity
+        max_y = centerMapPos[1] + radius
         if max_y >= self.mapInfo.h:
             max_y = self.mapInfo.h - 1
         # 在较小的范围内遍历所有点
         for x in range(min_x, max_x + 1):
             for y in range(min_y, max_y + 1):
-                if self.isHaveMachineAt((x, y)):
-                    # 如果目标地点有machine, 无法移动
-                    continue
-                distance = self.getDistance((x, y), startMapPos)
-                if (distance <= actionAblity):
-                    movableList.append((x, y))
+                distance = self.getDistance((x, y), centerMapPos)
+                if (distance <= radius):
+                    nearByList.append((x, y))
+        return nearByList
+
+    def getMovableTile(self, startMapPos, actionAblity):
+        # 获取可移动的位置列表
+        delList = []
+        movableList = self.getNearByTile(startMapPos, actionAblity)
+        # 剔除存在障碍的点
+        print(movableList)
+        for mapPos in movableList:
+            if self.isHaveMachineAt(mapPos):
+                # 如果目标地点有machine, 将该图块加入剔除列表
+                delList.append(mapPos)
+        for mapPos in delList:
+            movableList.remove(mapPos)
         return movableList
+
+    def getAttackableTile(self, attackerPos, atkRange):
+        # 获取可攻击位置列表
+        nearbyList = self.getNearByTile(attackerPos, atkRange)
+        attackableList = []
+        # 从中筛选存在攻击目标的项
+        for mapPos in nearbyList:
+            if self.isHaveMachineAt(mapPos):
+                attackableList.append(mapPos)
+        # 去除中心(自己)
+        attackableList.remove(tuple(attackerPos))
+        return attackableList
 
     def drawTarget(self):
         # Target层描画
@@ -192,6 +219,11 @@ class MapCtrl:
                 for mapPos in self.movableList:
                     surPos = self.mapPos2SurPos(mapPos)
                     self.surface.blit(movableTarget, surPos)
+                # 在可攻击地点上描画攻击标记
+                attackableTarget = self.resCtrl.getImgAttackableTarget()
+                for mapPos in self.attackableList:
+                    surPos = self.mapPos2SurPos(mapPos)
+                    self.surface.blit(attackableTarget, surPos)
 
         # 描画鼠标target
         normal_target = self.resCtrl.getImgNormalTarget()
