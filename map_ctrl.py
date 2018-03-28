@@ -24,9 +24,9 @@ class MapCtrl:
         # 视点所在位置, 单位为地图index, 表示显示的左上角第一个地图块的index. (0, 0)表示从地图左上角进行展示
         self.viewPos = [0, 0]
         # 地图中能在屏幕中显示的瓦片数
-        self.visibleTileW = self.surface.get_width() / param.MAP_TITLE_SIZE + 1
+        self.visibleTileW = self.surface.get_width() // param.MAP_TITLE_SIZE + 1
         self.visibleTileH = \
-            self.surface.get_height() / param.MAP_TITLE_SIZE + 1
+            self.surface.get_height() // param.MAP_TITLE_SIZE + 1
         # Machine列表
         self.machineList = []
         self.machineList.append(Machine("Tom", [2, 3], self.resCtrl))
@@ -66,8 +66,8 @@ class MapCtrl:
     def surPos2MapPos(self, surPos):
         # 从surface坐标转化为地图坐标
         mapPos = [0, 0]
-        mapPos[0] = (surPos[0] / param.MAP_TITLE_SIZE) + self.viewPos[0]
-        mapPos[1] = (surPos[1] / param.MAP_TITLE_SIZE) + self.viewPos[1]
+        mapPos[0] = (surPos[0] // param.MAP_TITLE_SIZE) + self.viewPos[0]
+        mapPos[1] = (surPos[1] // param.MAP_TITLE_SIZE) + self.viewPos[1]
         return mapPos
 
     def setMousePos(self, surPos):
@@ -121,7 +121,7 @@ class MapCtrl:
         while count < mapTileNum:
             index = self.mapInfo.data[count]
             # 计算在surface中的坐标(单位: 像素)
-            mapPos = [count % self.mapInfo.w, count / self.mapInfo.w]
+            mapPos = [count % self.mapInfo.w, count // self.mapInfo.w]
             surPos = self.mapPos2SurPos(mapPos)
             if index == 1:
                 self.surface.blit(grass, surPos)
@@ -183,8 +183,8 @@ class MapCtrl:
         # 描画鼠标target
         normal_target = self.resCtrl.getImgNormalTarget()
         mouse_draw_pos = \
-            (self.mousePos[0] / param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE,
-             self.mousePos[1] / param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE)
+            (self.mousePos[0] // param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE,
+             self.mousePos[1] // param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE)
         self.surface.blit(normal_target, mouse_draw_pos)
 
     def draw(self):
