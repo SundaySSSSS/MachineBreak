@@ -3,8 +3,8 @@ import pygame
 from res_ctrl import ResCtrl
 
 # 当前UICtrl状态
-NORMAL_STATE = 0 # 通常状态
-SHOW_MACH_INFO_STATE = 1 # 选中某个Machine的状态
+NORMAL_STATE = 0  # 通常状态
+SHOW_MACH_INFO_STATE = 1  # 选中某个Machine的状态
 
 BUTTON_STATE_UP = 0
 BUTTON_STATE_DOWN = 1
@@ -26,7 +26,7 @@ class UICtrl:
         # 切换到通常状态
         self.state = NORMAL_STATE
         self.machine = None
-        
+
     def draw(self):
         pygame.draw.rect(self.surface, pygame.Color(3, 136, 239), self.rect)
         pygame.draw.rect(self.surface, pygame.Color(7, 89, 175),
@@ -35,7 +35,6 @@ class UICtrl:
         # self.drawButton(pygame.Rect(10, 100, 150, 50), "test", 0)
         if self.state == SHOW_MACH_INFO_STATE:
             self.showMachineInfo(self.machine)
-        
 
     def drawButton(self, rect, caption, state):
         frameRect = rect
@@ -47,14 +46,10 @@ class UICtrl:
         pygame.draw.rect(self.surface, frameColor, frameRect)
         pygame.draw.rect(self.surface, interColor, interRect)
         # 描画文字
-        font_size = interRect.height - 12
-        if font_size < 10:
-            font_size = 10
-        font = pygame.font.Font("res/font/Arial Unicode.ttf", font_size)
-        font_sur = font.render(caption, True, (255, 255, 255))
         self.drawText(interRect, caption)
 
-    def drawText(self, rect, text, color = pygame.Color(0, 0, 0)):
+    def drawText(self, rect, text, alignment=0, color=pygame.Color(0, 0, 0)):
+        # 描画文字, alignment: 0-居中, 1-左对齐
         font_size = rect.height - 12
         if font_size < 10:
             font_size = 10
@@ -62,11 +57,24 @@ class UICtrl:
         font_sur = font.render(text, True, color)
         # 居中显示文字
         font_rect = font_sur.get_rect()
-        font_rect.x = rect.x + (rect.width - font_rect.width) // 2
+        if alignment == 0:  # 居中对齐
+            font_rect.x = rect.x + (rect.width - font_rect.width) // 2
+        else:
+            font_rect.x = rect.x
         font_rect.y = rect.y + (rect.height - font_rect.height) // 2
         self.surface.blit(font_sur, font_rect)
 
     def showMachineInfo(self, machine):
         # 显示当前machine的信息
-        rect = pygame.Rect(10, 30, 150, 50)
-        self.drawText(rect, machine.getName())
+        rect = pygame.Rect(10, 30, 150, 35)
+        self.drawText(rect, u"代号: %s" % machine.getName(), 1)
+        max_hp = machine.getMaxHp()
+        hp = machine.getHp()
+        atk = machine.getAtk()
+        atk_range = machine.getAtkRange()
+        rect.move_ip(0, 40)
+        self.drawText(rect, u"生命值: %d/%d" % (hp, max_hp), 1)
+        rect.move_ip(0, 40)
+        self.drawText(rect, u"攻击力: %d" % atk, 1)
+        rect.move_ip(0, 40)
+        self.drawText(rect, u"攻击范围: %d" % atk_range, 1)

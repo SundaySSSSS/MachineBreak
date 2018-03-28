@@ -3,10 +3,14 @@
 
 class Machine:
     def __init__(self, name, pos, resCtrl):
-        self.pos = pos  # 位置, 例如[2, 3]
+        self.pos = list(pos)  # 位置, 例如[2, 3]
         self.actionAblity = 3  # 行动力
         self.actionLeft = 3  # 剩余行动力
-        self.name = name
+        self.atk = 3  # 攻击力
+        self.atk_range = 3  # 攻击范围
+        self.hp = 10  # 生命值
+        self.max_hp = 10  # 最大生命值
+        self.name = name  # Machine代号
         self.img = resCtrl.getImgMachine()
 
     def moveTo(self, pos, action_cost):
@@ -19,6 +23,18 @@ class Machine:
     def turnStart(self):
         # 回合开始时调用, 刷新Machine的状态
         self.actionLeft = self.actionAblity
+
+    def getHp(self):
+        return self.hp
+
+    def getMaxHp(self):
+        return self.max_hp
+
+    def getAtk(self):
+        return self.atk
+
+    def getAtkRange(self):
+        return self.atk_range
 
     def getName(self):
         return self.name
