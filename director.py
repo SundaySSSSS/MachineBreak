@@ -51,7 +51,11 @@ class Director:
             # 鼠标抬起
             # 转化为地图surface的坐标
             posInSurface = (event.pos[0] - param.MAP_AREA_X, event.pos[1])
-            self.mapCtrl.selectSomething(posInSurface)
+            select_thing = self.mapCtrl.selectSomething(posInSurface)
+            if select_thing == param.SELECT_MACHINE:
+                machine = self.mapCtrl.getSelectMachine()
+                self.uiCtrl.stateShowMachineInfo(machine)   
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
             print("[MOUSEBUTTONDOWN]:", event.pos, event.button)
 

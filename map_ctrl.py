@@ -34,6 +34,10 @@ class MapCtrl:
         self.selectMachine = None  # 当前选中的Machine
         self.movableList = []  # 选中Machine的可移动范围
 
+    def getSelectMachine(self):
+        # 获取当前选中的Machine
+        return self.selectMachine
+        
     def loadMap(self, map_path):
         with open(map_path) as fp:
             map_file_content = fp.read()
@@ -76,11 +80,13 @@ class MapCtrl:
 
     def selectSomething(self, surPos):
         # 在地图上选择了某个地图块(一般是鼠标左键抬起)
+        select_thing = param.SELECT_MAP_TILE  # 标记当前选中了什么
         mapPos = self.surPos2MapPos(surPos)
         if self.state == NORMAL_STATE:
             if self.isHaveMachineAt(mapPos):
                 self.selectMachine = self.getMachineByMapPos(mapPos)
                 self.state = MACH_SELETED_STATE  # 选中了某个Machine, 切换状态
+                select_thing = param.SELECT_MACHINE
                 # 选中了一个Machine, 计算可以移动的范围
                 self.movableList = self.getMovableTile(
                     self.selectMachine.getPos(),
@@ -94,6 +100,7 @@ class MapCtrl:
             self.selectMachine.turnStart()  # 仅用于测试, 实装回合切换后去除
             self.selectMachine = None
             self.movableList = []
+        return select_thing
 
     # 移动地图
     def down(self, step):

@@ -20,6 +20,9 @@ class Machine:
         # 回合开始时调用, 刷新Machine的状态
         self.actionLeft = self.actionAblity
 
+    def getName(self):
+        return self.name
+
     def getImg(self):
         return self.img.copy()
 
