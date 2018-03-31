@@ -15,8 +15,8 @@ def main():
     while True:
         for event in pygame.event.get():
             director.processEvent(event)
-            director.draw()
-            pygame.display.update()
+        director.draw()
+        pygame.display.update()
 
 
 if __name__ == "__main__":
