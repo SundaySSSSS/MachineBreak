@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
-import pygame,sys
-from director import *
-from param import *
+import pygame
+from director import Director
+import param
 
-pygame.init()
-screen = pygame.display.set_mode((SCR_W, SCR_H))
-pygame.display.set_caption("Machine Break")
 
-# 创建导演
-director = Director(screen)
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((param.SCR_W, param.SCR_H))
+    pygame.display.set_caption("Machine Break")
 
-while True:
-    for event in pygame.event.get():
-        director.processEvent(event)
+    # 创建导演
+    director = Director(screen)
 
-    director.draw()
-    pygame.display.update()
+    while True:
+        for event in pygame.event.get():
+            director.processEvent(event)
+            director.draw()
+            pygame.display.update()
+
+
+if __name__ == "__main__":
+    main()
