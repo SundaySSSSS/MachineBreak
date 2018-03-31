@@ -40,8 +40,6 @@ class MapCtrl:
 
         # 初始化动画
         self.animeList = []
-        self.animeList.append(
-            AnimeCtrl.instance().getExplodingAnime(self.surface, (0, 0)))
 
     def getSelectMachine(self):
         # 获取当前选中的Machine
@@ -114,6 +112,12 @@ class MapCtrl:
                 # 选中的目标在攻击范围内, 进行攻击
                 target_machine = self.getMachineByMapPos(mapPos)
                 self.selectMachine.attackMachine(target_machine)
+                # 显示攻击动画
+                animePos = tuple(self.mapPos2SurPos(mapPos))
+                anime = AnimeCtrl.instance().getExplodingAnime(
+                    self.surface, animePos, 100, 1)
+                self.animeList.append(anime)
+
             self.state = NORMAL_STATE  # 什么也没选中, 切换到通常状态
             self.selectMachine.turnStart()  # 仅用于测试, 实装回合切换后去除
             self.selectMachine = None
@@ -156,9 +160,7 @@ class MapCtrl:
             count += 1
 
     def drawUpperItem(self):
-        # 描画动画
-        for anime in self.animeList:
-            anime.draw()
+        pass
 
     def drawMachine(self):
         # Machine层描画
@@ -166,6 +168,18 @@ class MapCtrl:
             machineImg = machine.getImg()
             machinePos = self.mapPos2SurPos(machine.getPos())
             self.surface.blit(machineImg, machinePos)
+
+    def drawSkyItem(self):
+        # 无效动画列表
+        deadAnimeList = []
+        # 描画动画
+        for anime in self.animeList:
+            anime.draw()
+            if not anime.isAlive():
+                deadAnimeList.append(anime)
+        # 剔除无效动画
+        for deadAnime in deadAnimeList:
+            self.animeList.remove(deadAnime)
 
     def getDistance(self, mapPos1, mapPos2):
         # 获取地图上两个点的距离
@@ -260,4 +274,5 @@ class MapCtrl:
         self.drawLowerItem()
         self.drawUpperItem()
         self.drawMachine()
+        self.drawSkyItem()
         self.drawTarget()
