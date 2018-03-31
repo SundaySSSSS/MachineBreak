@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from res_ctrl import ResCtrl
 
 
 class Machine:
-    def __init__(self, name, pos, resCtrl):
+    def __init__(self, name, pos):
         self.pos = list(pos)  # 位置, 例如[2, 3]
         self.actionAblity = 3  # 行动力
         self.actionLeft = 3  # 剩余行动力
@@ -11,7 +12,7 @@ class Machine:
         self.hp = 10  # 生命值
         self.max_hp = 10  # 最大生命值
         self.name = name  # Machine代号
-        self.img = resCtrl.getImgMachine()
+        self.img = ResCtrl.instance().getImgMachine()
 
     def moveTo(self, pos, action_cost):
         # 移动到指定地点, action_cost为消耗的行动力

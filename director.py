@@ -11,17 +11,16 @@ class Director:
     def __init__(self, screen):
         self.rect = screen.get_rect()
         self.screen = screen
-        resCtrl = ResCtrl()
         # 创建UI区域
         uiRect = pygame.Rect(param.UI_AREA_X, param.UI_AREA_Y,
                              param.UI_AREA_W, param.UI_AREA_H)
         ui_surface = screen.subsurface(uiRect)
-        self.uiCtrl = UICtrl(ui_surface, resCtrl)
+        self.uiCtrl = UICtrl(ui_surface)
         # 创建地图区域
         mapRect = pygame.Rect(param.MAP_AREA_X, param.MAP_AREA_Y,
                               param.MAP_AREA_W, param.MAP_AREA_H)
         map_surface = screen.subsurface(mapRect)
-        self.mapCtrl = MapCtrl(map_surface, resCtrl)
+        self.mapCtrl = MapCtrl(map_surface)
         # 加载地图
         self.mapCtrl.loadMap("res/map/test.json")
 

@@ -11,10 +11,9 @@ BUTTON_STATE_DOWN = 1
 
 
 class UICtrl:
-    def __init__(self, ui_surface, resCtrl):
+    def __init__(self, ui_surface):
         self.surface = ui_surface
         self.rect = ui_surface.get_rect()
-        self.resCtrl = resCtrl
         self.state = NORMAL_STATE
 
     def stateShowMachineInfo(self, machine):

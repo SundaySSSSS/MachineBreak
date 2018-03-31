@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import param
 from machine import Machine
+from res_ctrl import ResCtrl
 import json
 
 # MapCtrl的状态
@@ -16,10 +17,10 @@ class MapInfo:
 
 
 class MapCtrl:
-    def __init__(self, map_surface, resCtrl):
+    def __init__(self, map_surface):
         self.state = NORMAL_STATE  # 当前状态
         self.surface = map_surface
-        self.resCtrl = resCtrl
+
         self.mousePos = [-1, -1]  # 鼠标所在位置, 单位像素, 相对于地图surface
         # 视点所在位置, 单位为地图index, 表示显示的左上角第一个地图块的index. (0, 0)表示从地图左上角进行展示
         self.viewPos = [0, 0]
@@ -30,8 +31,8 @@ class MapCtrl:
             self.surface.get_height() // param.MAP_TILE_SIZE + 1
         # Machine列表
         self.machineList = []
-        self.machineList.append(Machine("Tom", [2, 3], self.resCtrl))
-        self.machineList.append(Machine("Jerry", [5, 5], self.resCtrl))
+        self.machineList.append(Machine("Tom", [2, 3]))
+        self.machineList.append(Machine("Jerry", [5, 5]))
         self.selectMachine = None  # 当前选中的Machine
         self.movableList = []  # 选中Machine的可移动地图块列表
         self.attackableList = []  # 选中Machine的可攻击目标列表
@@ -133,8 +134,8 @@ class MapCtrl:
 
     # 描画相关
     def drawLowerItem(self):
-        grass = self.resCtrl.getImgGrass()
-        water = self.resCtrl.getImgWater()
+        grass = ResCtrl.instance().getImgGrass()
+        water = ResCtrl.instance().getImgWater()
         mapTileNum = self.mapInfo.w * self.mapInfo.h
         count = 0
         while count < mapTileNum:
@@ -219,12 +220,12 @@ class MapCtrl:
         if self.state == MACH_SELETED_STATE:
             if self.selectMachine is not None:
                 # 在可移动地点上描画标记
-                movableTarget = self.resCtrl.getImgMovableTarget()
+                movableTarget = ResCtrl.instance().getImgMovableTarget()
                 for mapPos in self.movableList:
                     surPos = self.mapPos2SurPos(mapPos)
                     self.surface.blit(movableTarget, surPos)
                 # 在可攻击地点上描画攻击标记
-                attackableTarget = self.resCtrl.getImgAttackableTarget()
+                attackableTarget = ResCtrl.instance().getImgAttackableTarget()
                 for mapPos in self.attackableList:
                     surPos = self.mapPos2SurPos(mapPos)
                     self.surface.blit(attackableTarget, surPos)
@@ -236,9 +237,9 @@ class MapCtrl:
         mouse_map_pos = (self.mousePos[0] // param.MAP_TILE_SIZE,
                          self.mousePos[1] // param.MAP_TILE_SIZE)
         if mouse_map_pos in self.attackableList:
-            mouse_target = self.resCtrl.getImgAttackTarget()
+            mouse_target = ResCtrl.instance().getImgAttackTarget()
         else:
-            mouse_target = self.resCtrl.getImgNormalTarget()
+            mouse_target = ResCtrl.instance().getImgNormalTarget()
         self.surface.blit(mouse_target, mouse_draw_pos)
 
     def draw(self):

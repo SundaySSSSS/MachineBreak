@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import pygame
+import threading
 
 
 class ResCtrl:
+    _instance_lock = threading.Lock()
+
     def __init__(self):
         # 底层图块
         self.imgGrass = None
@@ -17,6 +20,14 @@ class ResCtrl:
             pygame.image.load("res/img/target.png").convert_alpha()
         # machine相关
         self.imgMachine = None
+
+    @classmethod
+    def instance(cls):
+        if not hasattr(ResCtrl, "_instance"):
+            with ResCtrl._instance_lock:
+                if not hasattr(ResCtrl, "_instance"):
+                    ResCtrl._instance = ResCtrl()
+        return ResCtrl._instance
 
     def getImgGrass(self):
         if self.imgGrass is None:
