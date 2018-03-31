@@ -3,7 +3,6 @@ import pygame
 import sys
 from ui_ctrl import UICtrl
 from map_ctrl import MapCtrl
-from res_ctrl import ResCtrl
 import param
 
 

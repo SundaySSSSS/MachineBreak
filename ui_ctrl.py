@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pygame
-from res_ctrl import ResCtrl
+from utils import Utils
 
 # 当前UICtrl状态
 NORMAL_STATE = 0  # 通常状态
@@ -45,35 +45,20 @@ class UICtrl:
         pygame.draw.rect(self.surface, frameColor, frameRect)
         pygame.draw.rect(self.surface, interColor, interRect)
         # 描画文字
-        self.drawText(interRect, caption)
-
-    def drawText(self, rect, text, alignment=0, color=pygame.Color(0, 0, 0)):
-        # 描画文字, alignment: 0-居中, 1-左对齐
-        font_size = rect.height - 12
-        if font_size < 10:
-            font_size = 10
-        font = pygame.font.Font("res/font/Arial Unicode.ttf", font_size)
-        font_sur = font.render(text, True, color)
-        # 居中显示文字
-        font_rect = font_sur.get_rect()
-        if alignment == 0:  # 居中对齐
-            font_rect.x = rect.x + (rect.width - font_rect.width) // 2
-        else:
-            font_rect.x = rect.x
-        font_rect.y = rect.y + (rect.height - font_rect.height) // 2
-        self.surface.blit(font_sur, font_rect)
+        Utils.instance().drawText(interRect, caption)
 
     def showMachineInfo(self, machine):
         # 显示当前machine的信息
+        utils = Utils.instance()
         rect = pygame.Rect(10, 30, 150, 35)
-        self.drawText(rect, u"代号: %s" % machine.getName(), 1)
+        utils.drawText(self.surface, rect, u"代号: %s" % machine.getName(), 1)
         max_hp = machine.getMaxHp()
         hp = machine.getHp()
         atk = machine.getAtk()
         atk_range = machine.getAtkRange()
         rect.move_ip(0, 40)
-        self.drawText(rect, u"生命值: %d/%d" % (hp, max_hp), 1)
+        utils.drawText(self.surface, rect, u"生命值: %d/%d" % (hp, max_hp), 1)
         rect.move_ip(0, 40)
-        self.drawText(rect, u"攻击力: %d" % atk, 1)
+        utils.drawText(self.surface, rect, u"攻击力: %d" % atk, 1)
         rect.move_ip(0, 40)
-        self.drawText(rect, u"攻击范围: %d" % atk_range, 1)
+        utils.drawText(self.surface, rect, u"攻击范围: %d" % atk_range, 1)
