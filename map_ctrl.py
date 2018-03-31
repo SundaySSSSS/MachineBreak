@@ -25,9 +25,9 @@ class MapCtrl:
         self.viewPos = [0, 0]
         # 地图中能在屏幕中显示的瓦片数
         self.visibleTileW = \
-            self.surface.get_width() // param.MAP_TITLE_SIZE + 1
+            self.surface.get_width() // param.MAP_TILE_SIZE + 1
         self.visibleTileH = \
-            self.surface.get_height() // param.MAP_TITLE_SIZE + 1
+            self.surface.get_height() // param.MAP_TILE_SIZE + 1
         # Machine列表
         self.machineList = []
         self.machineList.append(Machine("Tom", [2, 3], self.resCtrl))
@@ -67,15 +67,15 @@ class MapCtrl:
     def mapPos2SurPos(self, mapPos):
         # 从地图坐标转化为surface坐标
         surPos = [0, 0]
-        surPos[0] = (mapPos[0] - self.viewPos[0]) * param.MAP_TITLE_SIZE
-        surPos[1] = (mapPos[1] - self.viewPos[1]) * param.MAP_TITLE_SIZE
+        surPos[0] = (mapPos[0] - self.viewPos[0]) * param.MAP_TILE_SIZE
+        surPos[1] = (mapPos[1] - self.viewPos[1]) * param.MAP_TILE_SIZE
         return surPos
 
     def surPos2MapPos(self, surPos):
         # 从surface坐标转化为地图坐标
         mapPos = [0, 0]
-        mapPos[0] = (surPos[0] // param.MAP_TITLE_SIZE) + self.viewPos[0]
-        mapPos[1] = (surPos[1] // param.MAP_TITLE_SIZE) + self.viewPos[1]
+        mapPos[0] = (surPos[0] // param.MAP_TILE_SIZE) + self.viewPos[0]
+        mapPos[1] = (surPos[1] // param.MAP_TILE_SIZE) + self.viewPos[1]
         return mapPos
 
     def setMousePos(self, surPos):
@@ -231,10 +231,10 @@ class MapCtrl:
 
         # 描画鼠标target
         mouse_draw_pos = \
-            (self.mousePos[0] // param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE,
-             self.mousePos[1] // param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE)
-        mouse_map_pos = (self.mousePos[0] // param.MAP_TITLE_SIZE,
-                         self.mousePos[1] // param.MAP_TITLE_SIZE)
+            (self.mousePos[0] // param.MAP_TILE_SIZE * param.MAP_TILE_SIZE,
+             self.mousePos[1] // param.MAP_TILE_SIZE * param.MAP_TILE_SIZE)
+        mouse_map_pos = (self.mousePos[0] // param.MAP_TILE_SIZE,
+                         self.mousePos[1] // param.MAP_TILE_SIZE)
         if mouse_map_pos in self.attackableList:
             mouse_target = self.resCtrl.getImgAttackTarget()
         else:

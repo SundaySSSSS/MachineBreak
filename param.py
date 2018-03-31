@@ -17,7 +17,7 @@ MAP_AREA_W = SCR_W - UI_AREA_W
 MAP_AREA_H = SCR_H
 
 # 地图瓦片的尺寸
-MAP_TITLE_SIZE = 48
+MAP_TILE_SIZE = 48
 
 # 当前选中的物体
 SELECT_MAP_TILE = 0  # 选中了普通地图块
