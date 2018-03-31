@@ -2,6 +2,7 @@
 import param
 from machine import Machine
 from res_ctrl import ResCtrl
+from animation import Animation
 import json
 
 # MapCtrl的状态
@@ -36,7 +37,18 @@ class MapCtrl:
         self.selectMachine = None  # 当前选中的Machine
         self.movableList = []  # 选中Machine的可移动地图块列表
         self.attackableList = []  # 选中Machine的可攻击目标列表
-        self.count = 0
+
+        # 初始化动画
+        self.animeList = []
+        resCtrl = ResCtrl.instance()
+        exploderList = []
+        for stage in range(3):
+            exploderImg = resCtrl.getImgExploder(stage)
+            exploderList.append(exploderImg)
+        explodingAnime = Animation(exploderList)
+        explodingAnime.setFrameDuration(500)
+        explodingAnime.setPostion(self.surface, (0, 0))
+        self.animeList.append(explodingAnime)
 
     def getSelectMachine(self):
         # 获取当前选中的Machine
@@ -151,13 +163,8 @@ class MapCtrl:
             count += 1
 
     def drawUpperItem(self):
-        resCtrl = ResCtrl.instance()
-        stage = self.count % 3
-        exploderImg = resCtrl.getImgExploder(stage)
-        self.surface.blit(exploderImg, (0, 0))
-        self.count += 1
-        if (self.count > 30):
-            self.count = 0
+        for anime in self.animeList:
+            anime.draw()
 
     def drawMachine(self):
         # Machine层描画
