@@ -103,10 +103,15 @@ class MapCtrl:
                 # 选中的目标在可移动范围内, 移动到目标位置
                 self.selectMachine.moveTo(mapPos, self.getDistance(
                     mapPos, self.selectMachine.getPos()))
+            if tuple(mapPos) in self.attackableList:
+                # 选中的目标在攻击范围内, 进行攻击
+                target_machine = self.getMachineByMapPos(mapPos)
+                self.selectMachine.attackMachine(target_machine)
             self.state = NORMAL_STATE  # 什么也没选中, 切换到通常状态
             self.selectMachine.turnStart()  # 仅用于测试, 实装回合切换后去除
             self.selectMachine = None
             self.movableList = []
+            self.attackableList = []
         return select_thing
 
     # 移动地图
@@ -188,7 +193,6 @@ class MapCtrl:
         delList = []
         movableList = self.getNearByTile(startMapPos, actionAblity)
         # 剔除存在障碍的点
-        print(movableList)
         for mapPos in movableList:
             if self.isHaveMachineAt(mapPos):
                 # 如果目标地点有machine, 将该图块加入剔除列表
@@ -226,11 +230,16 @@ class MapCtrl:
                     self.surface.blit(attackableTarget, surPos)
 
         # 描画鼠标target
-        normal_target = self.resCtrl.getImgNormalTarget()
         mouse_draw_pos = \
             (self.mousePos[0] // param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE,
              self.mousePos[1] // param.MAP_TITLE_SIZE * param.MAP_TITLE_SIZE)
-        self.surface.blit(normal_target, mouse_draw_pos)
+        mouse_map_pos = (self.mousePos[0] // param.MAP_TITLE_SIZE,
+                         self.mousePos[1] // param.MAP_TITLE_SIZE)
+        if mouse_map_pos in self.attackableList:
+            mouse_target = self.resCtrl.getImgAttackTarget()
+        else:
+            mouse_target = self.resCtrl.getImgNormalTarget()
+        self.surface.blit(mouse_target, mouse_draw_pos)
 
     def draw(self):
         # 地图描画, 地图从下到上依次为:

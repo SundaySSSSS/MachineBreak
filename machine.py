@@ -20,6 +20,12 @@ class Machine:
         if self.actionLeft < 0:
             print("Error, action left < 0")
 
+    def attackMachine(self, target_machine):
+        # 攻击指定Machine
+        target_machine.hp -= self.atk
+        if target_machine.hp < 0:
+            target_machine.hp = 0
+
     def turnStart(self):
         # 回合开始时调用, 刷新Machine的状态
         self.actionLeft = self.actionAblity

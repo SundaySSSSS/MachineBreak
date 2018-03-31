@@ -54,8 +54,7 @@ class Director:
             select_thing = self.mapCtrl.selectSomething(posInSurface)
             if select_thing == param.SELECT_MACHINE:
                 machine = self.mapCtrl.getSelectMachine()
-                self.uiCtrl.stateShowMachineInfo(machine)   
+                self.uiCtrl.stateShowMachineInfo(machine)
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             print("[MOUSEBUTTONDOWN]:", event.pos, event.button)
-
