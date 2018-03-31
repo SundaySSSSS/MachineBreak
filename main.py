@@ -4,12 +4,18 @@ from director import Director
 import param
 from alarm import Alarm
 from debug_info import DebugInfo
+from start_window import StartWindow
 
 
 def main():
     pygame.init()
     screen = pygame.display.set_mode((param.SCR_W, param.SCR_H))
     pygame.display.set_caption("Machine Break")
+
+    # test start window
+    sw = StartWindow(screen)
+    sw.doModel()
+    # test end
 
     # 创建导演
     director = Director(screen)
