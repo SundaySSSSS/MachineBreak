@@ -20,6 +20,12 @@ class ResCtrl:
             pygame.image.load("res/img/target.png").convert_alpha()
         # machine相关
         self.imgMachine = None
+        # 爆炸相关
+        self.imgExploderSmall = None
+        self.imgExploderMiddle = None
+        self.imgExploderBig = None
+        self.imgExploder = \
+            pygame.image.load("res/img/exploder.png").convert_alpha()
 
     @classmethod
     def instance(cls):
@@ -74,3 +80,22 @@ class ResCtrl:
             self.imgMachine = \
                 pygame.image.load("res/img/machine.png").convert_alpha()
         return self.imgMachine.copy()
+
+    def getImgExploder(self, stage):
+        # 获取爆炸图片, stage: 0 - small 1-middle 2-big
+        if self.imgExploderSmall is None:
+            self.imgExploderSmall = \
+                self.imgExploder.subsurface(pygame.Rect(0, 0, 48, 48)).copy()
+        if self.imgExploderMiddle is None:
+            self.imgExploderMiddle = \
+                self.imgExploder.subsurface(pygame.Rect(48, 0, 48, 48)).copy()
+        if self.imgExploderBig is None:
+            self.imgExploderBig = \
+                self.imgExploder.subsurface(pygame.Rect(96, 0, 48, 48)).copy()
+
+        if stage == 0:
+            return self.imgExploderSmall.copy()
+        elif stage == 1:
+            return self.imgExploderMiddle.copy()
+        else:
+            return self.imgExploderBig.copy()

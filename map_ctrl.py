@@ -36,6 +36,7 @@ class MapCtrl:
         self.selectMachine = None  # 当前选中的Machine
         self.movableList = []  # 选中Machine的可移动地图块列表
         self.attackableList = []  # 选中Machine的可攻击目标列表
+        self.count = 0
 
     def getSelectMachine(self):
         # 获取当前选中的Machine
@@ -150,7 +151,13 @@ class MapCtrl:
             count += 1
 
     def drawUpperItem(self):
-        pass
+        resCtrl = ResCtrl.instance()
+        stage = self.count % 3
+        exploderImg = resCtrl.getImgExploder(stage)
+        self.surface.blit(exploderImg, (0, 0))
+        self.count += 1
+        if (self.count > 30):
+            self.count = 0
 
     def drawMachine(self):
         # Machine层描画
