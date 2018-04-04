@@ -2,6 +2,7 @@
 import pygame
 import sys
 from control.button_ctrl import ButtonCtrl
+from battle_window import BattleWindow
 
 
 class StartWindow():
@@ -49,3 +50,5 @@ class StartWindow():
 
     def fightSimBtnClick(self):
         print("click Fight Sim")
+        bw = BattleWindow(self.screen)
+        bw.doModel()
